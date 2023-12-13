@@ -30,36 +30,95 @@ int check_mirror_rows(int map_n, int row);
 int main()
 {
     read_data_from_file("13.txt");
-    //for (int n = 0; n < maps_cnt; ++n)
-    //    draw_map(n);
-    draw_map(0);
-/*
-        int result_row = compare_2_rows(0, 1, 2);
-    printf("Result of comparing rows: %d\n", result_row);
 
-    int result_col = compare_2_cols(0, 5, 6);
-    printf("Result of comparing columns: %d\n", result_col);
-*/
     long sum = 0;
+    long sum_new = 0;
     for (int n = 0; n < maps_cnt; ++n)
     {
         draw_map(n);
         int result_mirror;
+        int res_r = 0;
+        int res_c = 0;
         for (int i = 0; i < maps[n].cols - 1; ++i)
         {
             result_mirror = check_mirror_columns(n, i);
-            printf("Map %d: checking mirror column %d: res = %d\n", n, i + 1, result_mirror);
-            sum += result_mirror * (i + 1);
+            
+            if (result_mirror == 1)
+            {
+                printf("Map %d: checking mirror column %d: res = %d\n", n, i + 1, result_mirror);
+                sum += (i + 1);
+                res_c = i;
+            }
+
         }
         for (int i = 0; i < maps[n].rows - 1; ++i)
         {
             result_mirror = check_mirror_rows(n, i);
-            printf("Map %d: checking mirror row %d: res = %d\n", n, i + 1, result_mirror);
-            sum += result_mirror * (i + 1) * 100;
+            
+            if (result_mirror == 1)
+            {
+                printf("Map %d: checking mirror row %d: res = %d\n", n, i + 1, result_mirror);
+                sum +=  (i + 1) * 100;
+                res_r = i;
+            }
         }
+        int exit_flag = 0;
+        for (int r = 0; r <= maps[n].rows; ++r)
+        {
+            if (exit_flag)
+                break;
+            for (int c = 0; c < maps[n].cols; ++c)
+            {
+                if (exit_flag)
+                   break;
+
+                maps[n].data[r][c] = maps[n].data[r][c] ^ 1;
+                /////
+                for (int i = 0; i < maps[n].cols - 1; ++i)
+                {
+                    result_mirror = check_mirror_columns(n, i);
+                    if (result_mirror == 1 && i != res_c)
+                    {
+                        draw_map(n);      
+                        printf("Inverted R: %d C: %d\n", r, c);                  
+                        printf("Map %d: checking mirror column %d: res = %d\n", n, i + 1, result_mirror);
+                        sum_new += (i + 1);
+                        exit_flag = 1;
+                    }
+
+                }
+                for (int i = 0; i < maps[n].rows - 1; ++i)
+                {
+                    result_mirror = check_mirror_rows(n, i);
+                    if (result_mirror == 1 && i != res_r)
+                    {
+                        draw_map(n);          
+                        printf("Inverted R: %d C: %d\n", r, c);                    
+                        printf("Map %d: checking mirror row %d: res = %d\n", n, i + 1, result_mirror);
+                        sum_new += (i + 1) * 100;
+                        exit_flag = 1;
+                    }
+                }
+
+                /////
+                maps[n].data[r][c] = maps[n].data[r][c] ^ 1;
+
+            }
+        }
+        if (exit_flag == 0 && res_c > 0)
+        {
+            sum_new += res_c + 1 ;
+        }
+        if (exit_flag == 0 && res_r > 0)
+        {
+            sum_new += (res_r + 1) * 100;
+        }
+
+
     }
 
-    printf("Total sum: %ld", sum);
+    printf("Total sum: %ld\n", sum);
+    printf("Total new sum: %ld\n", sum_new);
     
 
     //NOT FINISHED YET
