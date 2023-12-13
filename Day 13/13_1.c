@@ -21,15 +21,33 @@ void read_data_from_file(char * filename);
 void draw_map(int n);
 int find_max_v_m_line(int map_n);
 int find_max_h_m_line(int map_n);
-int cmp2rows(int map_n, int r1, int r2);
-int cmp2cols(int map_n, int c1, int c2);
+int compare_2_rows(int map_n, int r1, int r2);
+int compare_2_cols(int map_n, int c1, int c2);
+int check_mirror_columns(int map_n, int col);
+int check_mirror_rows(int map_n, int row);
 
 
 int main()
 {
-    read_data_from_file("13.txt");
-    for (int n = 0; n < maps_cnt; ++n)
-        draw_map(n);
+    read_data_from_file("13t.txt");
+    //for (int n = 0; n < maps_cnt; ++n)
+    //    draw_map(n);
+    draw_map(0);
+
+        int result_row = compare_2_rows(0, 1, 2);
+    printf("Result of comparing rows: %d\n", result_row);
+
+    int result_col = compare_2_cols(0, 5, 6);
+    printf("Result of comparing columns: %d\n", result_col);
+
+    int result_mirror = check_mirror_columns(0, 4);
+    printf("Result of checking mirror columns: %d\n", result_mirror);
+
+    
+    draw_map(1);
+    result_mirror = check_mirror_rows(1, 3);
+    printf("Result of checking mirror rows: %d\n", result_mirror);
+
     //NOT FINISHED YET
     return 0;
 }
@@ -91,4 +109,104 @@ void draw_map(int n)
         printf("\n");
     }    
     printf("\n");
+}
+
+int compare_2_rows(int map_n, int r1, int r2) {
+    // Check if the map number is valid
+    if (map_n < 0 || map_n >= maps_cnt) {
+        fprintf(stderr, "Invalid map number\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Check if the row numbers are valid
+    if (r1 < 0 || r1 >= maps[map_n].rows || r2 < 0 || r2 >= maps[map_n].rows) {
+        fprintf(stderr, "Invalid row numbers\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Compare the two rows
+    for (int col = 0; col < maps[map_n].cols; col++) {
+        if (maps[map_n].data[r1][col] != maps[map_n].data[r2][col]) {
+            return 0; // Rows are not equal
+        }
+    }
+
+    return 1; // Rows are equal
+}
+
+int compare_2_cols(int map_n, int c1, int c2) {
+    // Check if the map number is valid
+    if (map_n < 0 || map_n >= maps_cnt) {
+        fprintf(stderr, "Invalid map number\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Check if the column numbers are valid
+    if (c1 < 0 || c1 >= maps[map_n].cols || c2 < 0 || c2 >= maps[map_n].cols) {
+        fprintf(stderr, "Invalid column numbers\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Compare the two columns
+    for (int row = 0; row < maps[map_n].rows; row++) {
+        if (maps[map_n].data[row][c1] != maps[map_n].data[row][c2]) {
+            return 0; // Columns are not equal
+        }
+    }
+
+    return 1; // Columns are equal
+}
+
+int check_mirror_columns(int map_n, int col) {
+    // Check if the map number is valid
+    if (map_n < 0 || map_n >= maps_cnt) {
+        fprintf(stderr, "Invalid map number\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Check if the column index is valid
+    if (col < 0 || col >= maps[map_n].cols) {
+        fprintf(stderr, "Invalid column index\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Iterate over the columns to the left and right
+    for (int offset = 1; (col - offset + 1) >= 0 && (col + offset) < maps[map_n].cols; offset++) {
+        int left_col = col - offset + 1;
+        int right_col = col + offset;
+
+        // Check if the columns are mirrors
+        if (!compare_2_cols(map_n, left_col, right_col)) {
+            return 0; // Columns are not mirrors
+        }
+    }
+
+    return 1; // Columns are mirrors
+}
+
+int check_mirror_rows(int map_n, int row) {
+    // Check if the map number is valid
+    if (map_n < 0 || map_n >= maps_cnt) {
+        fprintf(stderr, "Invalid map number\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Check if the row index is valid
+    if (row < 0 || row >= maps[map_n].rows) {
+        fprintf(stderr, "Invalid row index\n");
+        return 0; // Return an error code or handle it as appropriate
+    }
+
+    // Iterate over the rows above and below
+    for (int offset = 1; (row - offset + 1) >= 0 && (row + offset) < maps[map_n].rows; offset++) {
+        int above_row = row - offset + 1;
+        int below_row = row + offset;
+
+        // Check if the rows are mirrors
+        if (!compare_2_rows(map_n, above_row, below_row)) {
+            return 0; // Rows are not mirrors
+        }
+    }
+
+    return 1; // Rows are mirrors
 }
