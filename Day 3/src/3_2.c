@@ -9,7 +9,6 @@ int get_number_in_position(char matrix[MATRIX_SIZE][MATRIX_SIZE], int row, int c
 int check_adj_number(char matrix[MATRIX_SIZE][MATRIX_SIZE], int row, int col, int *num1, int *num2, int *cnt);
 
 int main() {
-    long int total = 0;
     char buffer[MATRIX_SIZE];
     char schematic[MATRIX_SIZE][MATRIX_SIZE];
     for (int i = 0; i < MATRIX_SIZE; ++i) {
@@ -17,9 +16,9 @@ int main() {
             schematic[i][j] = '.';
         }
     }
-    FILE *fp = fopen("3a.txt", "r");
+    FILE *fp = fopen("../data/3a.txt", "r");
     if (fp == NULL) {
-        perror("Error occured while opening 1.txt");
+        perror("Error occured while opening .txt");
         return 1;
     }
     int row = 1;
@@ -37,7 +36,6 @@ int main() {
             if (schematic[i][j] == '*') {
                 int num1 = 0, num2 = 0;
                 int cnt = 0;
-                int tmp_num;
                 check_adj_number(schematic, i, j - 1, &num1, &num2, &cnt);
                 check_adj_number(schematic, i, j + 1, &num1, &num2, &cnt);
                 check_adj_number(schematic, i - 1, j - 1, &num1, &num2, &cnt);
@@ -55,7 +53,6 @@ int main() {
     }
     printf("\n\n%d\n\n", sum);
     fclose(fp);
-
     return 0;
 }
 

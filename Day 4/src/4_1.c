@@ -8,7 +8,7 @@
 #define WIN_AMOUNT 10
 #define ELF_AMOUNT 25
 
-int strtoarray(int *dest_array, int dest_array_length, char *str);
+int strtoarray(int *dest_array, char *str);
 
 int main() {
     char buffer[256];
@@ -20,9 +20,9 @@ int main() {
     } card_t;
 
     card_t cards[CARDS_AMOUNT];
-    int i = 0;
+    int ind = 0;
 
-    FILE *fp = fopen("4.txt", "r");
+    FILE *fp = fopen("../data/4.txt", "r");
     if (fp == NULL) {
         perror("Error occured while opening 4.txt");
         return 1;
@@ -33,35 +33,22 @@ int main() {
             char *istr;
             istr = strtok(buffer, sep);
             int part = 1;
-            // Выделение последующих частей
             while (istr != NULL) {
-                // printf("Str: %s\n", istr);
                 if (part == 3) {
                     part = 4;
-                    strtoarray(cards[i].elf_values, ELF_AMOUNT, istr);
-                    // printf ("%s\n", istr);
+                    strtoarray(cards[ind].elf_values, istr);
                 }
                 if (part == 2) {
                     part = 3;
-                    strtoarray(cards[i].win_values, WIN_AMOUNT, istr);
-
-                    // printf ("%s | ", istr);
+                    strtoarray(cards[ind].win_values, istr);
                 }
                 if (part == 1) {
                     part = 2;
-                    cards[i].card_id = atoi(istr);
-
-                    // printf ("Card %d: ", cards[i].card_id);
+                    cards[ind].card_id = atoi(istr);
                 }
-                // Выделение очередной части строки
                 istr = strtok(NULL, sep);
             }
-            // printf("\nID: %d 1th win num: %d  10th win num: %d   1th elf num: %d  25th elf num: %d\n",
-            // cards[i].card_id, cards[i].win_values[0],
-            // cards[i].win_values[9],cards[i].elf_values[0],cards[i].elf_values[24]);
-
-            // getchar();
-            i++;
+            ind++;
         }
     }
 
@@ -69,7 +56,6 @@ int main() {
     int sum_total = 0;
     int card_count = 0;
     for (int c = 0; c < CARDS_AMOUNT; ++c) {
-        card_count = 0;
         for (int i = 0; i < WIN_AMOUNT; ++i) {
             for (int j = 0; j < ELF_AMOUNT; ++j) {
                 if (cards[c].win_values[i] == cards[c].elf_values[j]) ++card_count;
@@ -83,7 +69,7 @@ int main() {
     return 0;
 }
 
-int strtoarray(int *dest_array, int dest_array_length, char *str) {
+int strtoarray(int *dest_array, char *str) {
     int i = 0;
     int ch = 0;
 
@@ -97,9 +83,7 @@ int strtoarray(int *dest_array, int dest_array_length, char *str) {
             num = num * 10 + (str[ch] - 48);
             ++ch;
         }
-
         dest_array[i] = num;
-        // printf("Dest num: %d, Str: %s\n", dest_array[i], str);
         ++i;
         if (str[ch] != '\0') ++ch;
     }
