@@ -10,7 +10,7 @@ long long int distances[1] = {234102711571236};
 int main() {
     long long int r0 = get_number_of_ways(-1, times[0], -distances[0]);
 
-    printf("Total: %d", r0);
+    printf("Total: %lld", r0);
 
     return 0;
 }
@@ -22,6 +22,6 @@ long long int get_number_of_ways(long long int a, long long int b, long long int
     x2 = (-b - sqrt(discr)) / (2 * a);
     printf("From %f To %f\n", x1, x2);
     long long int res = ((long long int)x2) - ((long long int)x1);
-    printf("res: %d\n", res);
+    printf("res: %lld\n", res);
     return res;
 }
